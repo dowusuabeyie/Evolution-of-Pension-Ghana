@@ -1,0 +1,113 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usetikzlibrary{shapes.geometric,positioning,calc,fit}
+\usepackage{fontawesome5}
+\usepackage{xcolor}
+% ---------- DIMENSIONS YOU CHANGE TO RESIZE BOXES ----------
+\newlength\boxwidth     \setlength\boxwidth{5.5cm}   % <--- Change this to set WIDTH
+\newlength\boxheight    \setlength\boxheight{2.2cm}  % <--- Change this to set HEIGHT
+\newlength\headerwidth  \setlength\headerwidth{5.5cm} % <--- Should match boxwidth
+
+% ---------- STYLES ----------
+\tikzset{
+	basic box/.style = {
+		shape = rectangle,
+		draw = #1,
+		fill = #1!20,
+		rounded corners,
+		align = center,
+		text width=6cm,      
+		minimum height=2.5cm, 
+		inner sep=4pt             
+	},
+	header node/.style = {
+		minimum width = 2cm,
+		font = \strut\Large\ttfamily,
+		text depth = 1pt,
+		fill = white,
+		draw,
+		rounded corners=2pt,
+		fill = yellow!40
+	},
+	future node/.style = {
+		circle,
+		draw=futuregreen,
+		fill=futuregreen!25,
+		thick,
+		minimum size=2.2cm,
+		font=\bfseries\Large
+	},
+	header/.style = {
+		inner ysep = 1.1em,
+		append after command = {
+			\pgfextra{\let\TikZlastnode\tikzlastnode}
+			node[header node] (header-\TikZlastnode) at (\TikZlastnode.north) {#1}
+			node[fit=(\TikZlastnode)(header-\TikZlastnode)] (h-\TikZlastnode) {}
+		}
+	}
+}
+
+\definecolor{futuregreen}{RGB}{0,171,105}
+\begin{document}
+	\begin{tikzpicture}[node distance=1.5cm, thick, >=latex]
+		
+		% ---------- LEFT BOX ----------
+		\node[basic box=blue, header=1946] (dft)
+		{\textbf{Pensions Ordinance (CAP 30)}\\
+			Non-contributory, fully funded
+			covered civil servants only.};
+		
+		% ---------- RIGHT BOX ----------
+		\node[basic box=green, header=1965, right=of dft] (dmft-p)
+		{\textbf{Social Security Act 279 (SSNIT)}\\
+			DB, civil servants + private sector employees,
+			no informal workers, sust. issues PAYG};
+		
+		% ---------- ARROW ----------
+		\draw[->, ultra thick, blue] 
+		(dft) -- node[midway, sloped, font=\large, fill=white]{\faUniversalAccess} (dmft-p);
+		
+		% ---------- BOTTOM LEFT ----------
+		\node[basic box=red, header=1991, below=2cm of dft] (b1991)
+		{\textbf{PNDC Law 247 (Reform)}\\
+			SSNIT gov. and admin., autono, formal
+			employers to enrol employees, CAP30 $>$ SSNIT};
+		% ----- VERTICAL + HORIZONTAL ARROW --------
+		\draw[->, ultra thick, blue]
+		(dmft-p.south)
+		|- ($(b1991.north)+(0,1cm)$) coordinate(turn)
+		-- node[pos=0.35, above, xshift=111pt, font=\large, fill=white, inner sep=1pt]{\faUniversity}
+		($(b1991.north)+(0,3mm)$);
+		% ---------- BOTTOM RIGHT ----------
+		\node[basic box=teal, header=2004, right=of b1991] (b2004)
+		{\textbf{Call for Reform + Protests}\\
+			Est. Presidential Commission on Pensions, public dissatisfaction};
+		
+		% ---------- BOTTOM ARROW ----------
+		\draw[->, ultra thick, blue] 
+		(b1991) -- node[midway, sloped, font=\large, fill=white]{\faFistRaised} (b2004);
+		% ---------- THIRD ROW LEFT BOX ----------
+		\node[basic box=violet, header=2008/2014, below=2cm of b1991] (b2008)
+		{\textbf{National Pensions Act, 2008} \\
+			(Act 766) and 2014 (Act 883) \\ Est. Three-Tier sys., Lower exemption age (50), Unify the sys and solve sust. issues};
+		
+		%VERTICAL + HORIZONTAL ARROW
+		\draw[->, ultra thick, blue]
+		(b2004.south)
+		|- ($(b2008.north)+(0,1cm)$) coordinate(turn)
+		-- node[pos=0.35, above, xshift=111pt, font=\large, fill=white, inner sep=1pt]{\faSync}
+		($(b2008.north)+(0,3mm)$);
+		% ---------- THIRD ROW RIGHT BOX ----------
+		\node[future node, right=3.5cm of b2008] (bfuture)
+		{\begin{tabular}{c}
+				FUTURE \\ [0.4em]
+				\faUserShield\ \textcolor{red}{\faBullseye}\ \faStreetView				
+		\end{tabular}};
+		
+		% ---------- THIRD ROW ARROW ----------
+		\draw[->, ultra thick, blue, dashed] (b2008) -- (bfuture);
+		
+		\draw[->, ultra thick, blue, dashed] 
+		(b2008) -- node[midway, sloped, font=\large, fill=white]{\faRocket} (bfuture);
+		
+	\end{tikzpicture}
+\end{document}
